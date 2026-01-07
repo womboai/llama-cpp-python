@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.17]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@95ea9e086 (b7652)
+- feat: Add `flash_attn_type` parameter to `Llama()` for forward compatibility
+- feat: Add `LLAMA_FLASH_ATTN_TYPE_*` enum (AUTO, DISABLED, ENABLED)
+- feat: Add `LLAMA_PARAMS_FIT_STATUS_*` enum
+- feat: Add `LLAMA_MODEL_META_KEY_*` enum constants
+- feat: Add `LLAMA_ROPE_TYPE_IMROPE` constant
+- feat: Add `no_host` and `no_alloc` fields to `llama_model_params`
+- feat: Add `flash_attn_type`, `samplers`, `n_samplers` fields to `llama_context_params`
+- feat: Add `llama_n_ctx_seq`, `llama_model_n_embd_inp`, `llama_model_n_embd_out` functions
+- fix: Replace deprecated `llama_sampler_init_softmax` with `llama_sampler_init_temp(1.0)` in LlamaSampler.add_softmax()
+- fix: Update embed() to use wrapper methods instead of direct C API calls
+- fix: Add `LLAMA_INSTALL_VERSION` fallback in CMakeLists.txt for mtmd build
+- removed: `llama_get_kv_self` binding (use `llama_get_memory` wrapper instead)
+- removed: `llama_kv_self_*` bindings (11 functions, use `llama_memory_*` wrappers instead)
+- removed: `llama_sampler_init_softmax` binding
+- BREAKING (C API): `flash_attn` bool replaced with `flash_attn_type` enum in context params
+- NOTE: Python API backward compatible - both `flash_attn` bool and `flash_attn_type` enum work
+
 ## [0.3.16]
 
 - feat: Update llama.cpp to ggerganov/llama.cpp@4227c9be4268ac844921b90f31595f81236bd317
@@ -105,7 +125,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: Fix memory allocation of ndarray in by @xu-song in #1704
 - fix: Use system message in og qwen format by @abetlen in 98eb092d3c6e7c142c4ba2faaca6c091718abbb3
 
-
 ## [0.2.90]
 
 - feat: Update llama.cpp to ggerganov/llama.cpp@1d1ccce67613674c75c9c7e3fa4c1e24e428ba48
@@ -120,7 +139,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.2.88]
 
 - feat: Update llama.cpp to ggerganov/llama.cpp@fc4ca27b25464a11b3b86c9dbb5b6ed6065965c2
-- fix: only print 'cache saved' in verbose mode by @lsorber in #1668 
+- fix: only print 'cache saved' in verbose mode by @lsorber in #1668
 - fix: Added back from_file method to LlamaGrammar by @ExtReMLapin in #1673
 - fix: grammar prints on each call by @abetlen in 0998ea0deea076a547d54bd598d6b413b588ee2b
 - feat: Enable recursive search of HFFS.ls when using from_pretrained by @benHeidabetlen in #1656

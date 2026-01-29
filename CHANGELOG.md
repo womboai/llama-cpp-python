@@ -10,12 +10,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.3.18]
 
 - feat: Update llama.cpp to ggerganov/llama.cpp@3bcc99099 (b7868)
-- feat: Add `use_direct_io` field to `llama_model_params` (takes precedence over `use_mmap` when supported)
-- feat: Add `llama_sampler_init_adaptive_p` sampler for adaptive probability-based token selection
 - feat: GLM 4.7 Flash support via upstream CUDA/Flash Attention optimizations
 - feat: Qwen3 Next model support
 - feat: Self-speculative decoding support (no draft model required)
-- NOTE: `llama_adapter_lora_free` is now deprecated upstream (adapters freed with model)
+- feat: Add `use_direct_io` field to `llama_model_params`
+- feat: Add `llama_model_is_hybrid()` for hybrid models (Jamba, Granite)
+- feat: Add `llama_max_tensor_buft_overrides()`
+- feat: Add adapter metadata functions (`llama_adapter_meta_*`)
+- feat: Add aLoRA invocation token functions (`llama_adapter_get_alora_*`)
+- feat: Add `llama_memory_breakdown_print()` for debugging
+- feat: Add `llama_log_get()` to retrieve current log callback
+- feat: Add `llama_sampler_init_adaptive_p()` (commented, requires rebuild)
+- fix: Map `flash_attn=False` to `DISABLED` (was incorrectly `AUTO`)
+- NOTE: `llama_adapter_lora_free` is now deprecated (adapters freed with model)
 
 ## [0.3.17]
 

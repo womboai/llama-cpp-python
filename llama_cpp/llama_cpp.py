@@ -1333,6 +1333,11 @@ def llama_max_devices() -> int: ...
 def llama_max_parallel_sequences() -> int: ...
 
 
+# LLAMA_API size_t llama_max_tensor_buft_overrides(void);
+@ctypes_function("llama_max_tensor_buft_overrides", [], ctypes.c_size_t)
+def llama_max_tensor_buft_overrides() -> int: ...
+
+
 # LLAMA_API bool llama_supports_mmap       (void);
 @ctypes_function("llama_supports_mmap", [], ctypes.c_bool)
 def llama_supports_mmap() -> bool: ...
@@ -1674,6 +1679,14 @@ def llama_model_is_recurrent(model: llama_model_p, /) -> bool:
     ...
 
 
+# // Returns true if the model is hybrid (like Jamba, Granite, etc.)
+# LLAMA_API bool llama_model_is_hybrid(const struct llama_model * model);
+@ctypes_function("llama_model_is_hybrid", [llama_model_p_ctypes], ctypes.c_bool)
+def llama_model_is_hybrid(model: llama_model_p, /) -> bool:
+    """Returns true if the model is hybrid (like Jamba, Granite, etc.)"""
+    ...
+
+
 # // Returns true if the model is diffusion-based (like LLaDA, Dream, etc.)
 # LLAMA_API bool llama_model_is_diffusion(const struct llama_model * model);
 @ctypes_function("llama_model_is_diffusion", [llama_model_p_ctypes], ctypes.c_bool)
@@ -1725,15 +1738,95 @@ def llama_adapter_lora_init(
 ) -> Optional[llama_adapter_lora_p]: ...
 
 
+# // Get metadata value as a string by key name
+# LLAMA_API int32_t llama_adapter_meta_val_str(const struct llama_adapter_lora * adapter, const char * key, char * buf, size_t buf_size);
+@ctypes_function(
+    "llama_adapter_meta_val_str",
+    [llama_adapter_lora_p_ctypes, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_size_t],
+    ctypes.c_int32,
+)
+def llama_adapter_meta_val_str(
+    adapter: llama_adapter_lora_p,
+    key: bytes,
+    buf: Union[bytes, CtypesArray[ctypes.c_char]],
+    buf_size: int,
+    /,
+) -> int: ...
+
+
+# // Get the number of metadata key/value pairs
+# LLAMA_API int32_t llama_adapter_meta_count(const struct llama_adapter_lora * adapter);
+@ctypes_function(
+    "llama_adapter_meta_count", [llama_adapter_lora_p_ctypes], ctypes.c_int32
+)
+def llama_adapter_meta_count(adapter: llama_adapter_lora_p, /) -> int: ...
+
+
+# // Get metadata key name by index
+# LLAMA_API int32_t llama_adapter_meta_key_by_index(const struct llama_adapter_lora * adapter, int32_t i, char * buf, size_t buf_size);
+@ctypes_function(
+    "llama_adapter_meta_key_by_index",
+    [llama_adapter_lora_p_ctypes, ctypes.c_int32, ctypes.c_char_p, ctypes.c_size_t],
+    ctypes.c_int32,
+)
+def llama_adapter_meta_key_by_index(
+    adapter: llama_adapter_lora_p,
+    i: int,
+    buf: Union[bytes, CtypesArray[ctypes.c_char]],
+    buf_size: int,
+    /,
+) -> int: ...
+
+
+# // Get metadata value as a string by index
+# LLAMA_API int32_t llama_adapter_meta_val_str_by_index(const struct llama_adapter_lora * adapter, int32_t i, char * buf, size_t buf_size);
+@ctypes_function(
+    "llama_adapter_meta_val_str_by_index",
+    [llama_adapter_lora_p_ctypes, ctypes.c_int32, ctypes.c_char_p, ctypes.c_size_t],
+    ctypes.c_int32,
+)
+def llama_adapter_meta_val_str_by_index(
+    adapter: llama_adapter_lora_p,
+    i: int,
+    buf: Union[bytes, CtypesArray[ctypes.c_char]],
+    buf_size: int,
+    /,
+) -> int: ...
+
+
 # // Manually free a LoRA adapter
-# // Note: loaded adapters will be free when the associated model is deleted
-# LLAMA_API void llama_adapter_lora_free(struct llama_adapter_lora * adapter);
+# // NOTE: loaded adapters will be free when the associated model is deleted (DEPRECATED)
+# LLAMA_API DEPRECATED(void llama_adapter_lora_free(struct llama_adapter_lora * adapter),
+#         "adapters are now freed together with the associated model");
 @ctypes_function(
     "llama_adapter_lora_free",
     [llama_adapter_lora_p_ctypes],
     None,
 )
 def llama_adapter_lora_free(adapter: llama_adapter_lora_p, /): ...
+
+
+# // Get the invocation tokens if the current lora is an alora
+# LLAMA_API uint64_t            llama_adapter_get_alora_n_invocation_tokens(const struct llama_adapter_lora * adapter);
+@ctypes_function(
+    "llama_adapter_get_alora_n_invocation_tokens",
+    [llama_adapter_lora_p_ctypes],
+    ctypes.c_uint64,
+)
+def llama_adapter_get_alora_n_invocation_tokens(
+    adapter: llama_adapter_lora_p, /
+) -> int: ...
+
+
+# LLAMA_API const llama_token * llama_adapter_get_alora_invocation_tokens  (const struct llama_adapter_lora * adapter);
+@ctypes_function(
+    "llama_adapter_get_alora_invocation_tokens",
+    [llama_adapter_lora_p_ctypes],
+    ctypes.POINTER(llama_token),
+)
+def llama_adapter_get_alora_invocation_tokens(
+    adapter: llama_adapter_lora_p, /
+) -> CtypesPointer[llama_token]: ...
 
 
 # // The following functions operate on a llama_context, hence the naming: llama_verb_...
@@ -2042,6 +2135,14 @@ def llama_memory_seq_pos_max(
 @ctypes_function("llama_memory_can_shift", [llama_memory_t_ctypes], ctypes.c_bool)
 def llama_memory_can_shift(mem: llama_memory_t, /) -> bool:
     """Check if the memory supports shifting"""
+    ...
+
+
+# // Print memory breakdown (for debugging)
+# LLAMA_API void llama_memory_breakdown_print(const struct llama_context * ctx);
+@ctypes_function("llama_memory_breakdown_print", [llama_context_p_ctypes], None)
+def llama_memory_breakdown_print(ctx: llama_context_p, /) -> None:
+    """Print memory breakdown (for debugging)"""
     ...
 
 
@@ -3656,14 +3757,15 @@ def llama_sampler_init_mirostat_v2(
 #                            float   target,
 #                            float   decay,
 #                         uint32_t   seed);
-@ctypes_function(
-    "llama_sampler_init_adaptive_p",
-    [ctypes.c_float, ctypes.c_float, ctypes.c_uint32],
-    llama_sampler_p_ctypes,
-)
-def llama_sampler_init_adaptive_p(
-    target: float, decay: float, seed: int, /
-) -> llama_sampler_p: ...
+# NOTE: Binding commented out - requires library rebuild against b7868+
+# @ctypes_function(
+#     "llama_sampler_init_adaptive_p",
+#     [ctypes.c_float, ctypes.c_float, ctypes.c_uint32],
+#     llama_sampler_p_ctypes,
+# )
+# def llama_sampler_init_adaptive_p(
+#     target: float, decay: float, seed: int, /
+# ) -> llama_sampler_p: ...
 
 
 # /// @details Intializes a GBNF grammar, see grammars/README.md for details.
@@ -3917,6 +4019,22 @@ def llama_log_set(
     """Set callback for all future logging events.
 
     If this is not called, or NULL is supplied, everything is output on stderr."""
+    ...
+
+
+# // Get the current log callback and user data
+# LLAMA_API void llama_log_get(ggml_log_callback * log_callback, void ** user_data);
+@ctypes_function(
+    "llama_log_get",
+    [ctypes.c_void_p, ctypes.c_void_p],
+    None,
+)
+def llama_log_get(
+    log_callback: ctypes.c_void_p,
+    user_data: ctypes.c_void_p,
+    /,
+):
+    """Get the current log callback and user data."""
     ...
 
 

@@ -750,6 +750,7 @@ class llama_model_params(ctypes.Structure):
         kv_overrides: CtypesArray[llama_model_kv_override]
         vocab_only: bool
         use_mmap: bool
+        use_direct_io: bool
         use_mlock: bool
         check_tensors: bool
         use_extra_bufts: bool
@@ -768,6 +769,7 @@ class llama_model_params(ctypes.Structure):
         ("kv_overrides", ctypes.POINTER(llama_model_kv_override)),
         ("vocab_only", ctypes.c_bool),
         ("use_mmap", ctypes.c_bool),
+        ("use_direct_io", ctypes.c_bool),
         ("use_mlock", ctypes.c_bool),
         ("check_tensors", ctypes.c_bool),
         ("use_extra_bufts", ctypes.c_bool),
@@ -3639,6 +3641,28 @@ def llama_sampler_init_mirostat(
 )
 def llama_sampler_init_mirostat_v2(
     seed: int, tau: float, eta: float, /
+) -> llama_sampler_p: ...
+
+
+# /// adaptive-p: select tokens near a configurable target probability over time.
+# ///
+# /// @param target select tokens near this probability (valid range 0.0 to 1.0; negative = disabled)
+# /// @param decay  EMA decay for adaptation; history ≈ 1/(1-decay) tokens (valid range 0.0 - 0.99)
+# /// @param seed   RNG seed
+# ///
+# /// ref: https://github.com/ggml-org/llama.cpp/pull/17927
+# ///
+# LLAMA_API struct llama_sampler * llama_sampler_init_adaptive_p(
+#                            float   target,
+#                            float   decay,
+#                         uint32_t   seed);
+@ctypes_function(
+    "llama_sampler_init_adaptive_p",
+    [ctypes.c_float, ctypes.c_float, ctypes.c_uint32],
+    llama_sampler_p_ctypes,
+)
+def llama_sampler_init_adaptive_p(
+    target: float, decay: float, seed: int, /
 ) -> llama_sampler_p: ...
 
 

@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.18]
+
+- feat: Update llama.cpp to ggerganov/llama.cpp@3bcc99099 (b7868)
+- feat: Add `use_direct_io` field to `llama_model_params` (takes precedence over `use_mmap` when supported)
+- feat: Add `llama_sampler_init_adaptive_p` sampler for adaptive probability-based token selection
+- feat: GLM 4.7 Flash support via upstream CUDA/Flash Attention optimizations
+- feat: Qwen3 Next model support
+- feat: Self-speculative decoding support (no draft model required)
+- NOTE: `llama_adapter_lora_free` is now deprecated upstream (adapters freed with model)
+
 ## [0.3.17]
 
 - feat: Update llama.cpp to ggerganov/llama.cpp@95ea9e086 (b7652)

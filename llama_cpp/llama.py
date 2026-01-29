@@ -348,7 +348,7 @@ class Llama:
             self.context_params.flash_attn_type = (
                 llama_cpp.LLAMA_FLASH_ATTN_TYPE_ENABLED
                 if flash_attn
-                else llama_cpp.LLAMA_FLASH_ATTN_TYPE_AUTO
+                else llama_cpp.LLAMA_FLASH_ATTN_TYPE_DISABLED
             )
 
         if op_offload is not None:

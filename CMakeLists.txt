@@ -154,6 +154,10 @@ if (LLAMA_BUILD)
         endif()
 
         # Building llava
+        # Set LLAMA_INSTALL_VERSION if not already defined (needed by mtmd CMakeLists.txt)
+        if(NOT DEFINED LLAMA_INSTALL_VERSION)
+            set(LLAMA_INSTALL_VERSION "0.0.0" CACHE STRING "llama.cpp install version" FORCE)
+        endif()
         add_subdirectory(vendor/llama.cpp/tools/mtmd)
 
         if (WIN32)
